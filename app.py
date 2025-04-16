@@ -11,19 +11,11 @@ PROOF_FOLDER = 'static/proofs'
 os.makedirs(CIRCULAR_FOLDER, exist_ok=True)
 os.makedirs(PROOF_FOLDER, exist_ok=True)
 
-# Database connection settings
-DB_HOST = "localhost"
-DB_NAME = "test"
-DB_USER = "postgres"
-DB_PASSWORD = "1234"
+# Use DATABASE_URL from environment (Render will provide this)
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def connect_db():
-    return psycopg2.connect(
-        host=DB_HOST,
-        dbname=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD
-    )
+    return psycopg2.connect(DATABASE_URL)
 
 @app.route("/", methods=["GET"])
 def home():
