@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Form</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: white;
+        }
+
+        .container {
+            width: 30%;
+            text-align: center;
+            border: 2px solid;
+            border-radius: 14px;
+            padding: 30px;
+            background-color: #f4f4f4;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 16px;
+        }
+
+        input {
+            width: 95%;
+            padding: 10px;
+            border-color: aliceblue;
+            margin: 8px 0;
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form action="/submit" method="post" enctype="multipart/form-data">
+            <h1>Event Details</h1>
+            <label>Name of the Event</label>
+            <input type="text" name="eve" id="eve" placeholder="Event name" required><br>
+
+            <label>Event Starting Date</label>
+            <input type="date" name="start_date" id="start_date" required><br>
+
+            <label>Event Ending Date</label>
+            <input type="date" name="end_date" id="end_date" required><br>
+
+            <label>Organizer</label>
+            <input type="text" name="organizer" id="organizer" required><br>
+
+            <label>Chief Guest Name</label>    
+            <input type="text" name="chief_guest" id="chief_guest" required><br>
+
+            <label>Circular Image</label>
+            <input type="file" name="circular_image" id="circular_image" accept="image/jpeg" required><br>
+
+            <label>Proof Image 1</label>
+            <input type="file" name="proof1" id="proof1" accept="image/jpeg" required><br>
+
+            <label>Proof Image 2</label>
+            <input type="file" name="proof2" id="proof2" accept="image/jpeg" required><br>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
