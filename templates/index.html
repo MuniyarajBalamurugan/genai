@@ -2,163 +2,138 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NaacGPT - Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NaacGPT Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
-      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      font-family: Arial, sans-serif;
       display: flex;
       height: 100vh;
-      margin: 0;
-      background-color: #f8f9fa;
     }
     .sidebar {
       width: 250px;
       background-color: #007bff;
       color: white;
-      padding-top: 50px;
+      padding-top: 20px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+      align-items: stretch;
     }
     .sidebar button {
-      width: 100%;
-      padding: 15px;
-      font-size: 18px;
-      background-color: #007bff;
-      color: white;
+      background: none;
       border: none;
-      border-bottom: 1px solid #fff;
+      color: white;
+      padding: 15px;
+      text-align: left;
+      width: 100%;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      font-size: 16px;
     }
     .sidebar button:hover {
       background-color: #0056b3;
     }
-    .content-area {
+    .submenu {
+      padding-left: 20px;
+      display: none;
+      background-color: #3399ff;
+    }
+    .submenu button {
+      font-size: 14px;
+    }
+    .content {
       flex: 1;
       padding: 20px;
-      background-color: #f4f4f4;
       overflow-y: auto;
+      background-color: #f4f4f4;
     }
     .form-container {
-      max-width: 800px;
-      margin-top: 30px;
+      background: white;
       padding: 20px;
-      background-color: white;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .event-card {
-      border: 1px solid #ddd;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 8px;
-      background-color: #fff;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .event-card img {
-      max-width: 100%;
-      height: auto;
-      margin-bottom: 10px;
-      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: auto;
     }
   </style>
 </head>
 <body>
-  <!-- Left Sidebar -->
   <div class="sidebar">
-    <h3>NaacGPT Dashboard</h3>
-    <button onclick="showForm(1)">Event Submission Form</button>
-    <button onclick="showForm(2)">View Submitted Events</button>
+    <button onclick="toggleSubMenu('criteria1-sub')">Criteria 1</button>
+    <div id="criteria1-sub" class="submenu">
+      <button onclick="showContent('add-criteria1')">Add Criteria</button>
+      <button onclick="showContent('view-criteria1')">View Criteria</button>
+    </div>
     <button onclick="logout()">Logout</button>
   </div>
-
-  <!-- Right Content Area -->
-  <div class="content-area">
-    <!-- Event Submission Form (Form 1) -->
-    <div id="form1" class="form-container" style="display: none;">
-      <h2>Event Details</h2>
-      <form action="/submit" method="POST" enctype="multipart/form-data">
+  
+  <div class="content">
+    <div id="add-criteria1" class="form-container" style="display: none;">
+      <h4>Add Criteria 1</h4>
+      <form id="criteria1Form">
         <div class="mb-3">
-          <label for="event_name" class="form-label">Event Name</label>
-          <input type="text" class="form-control" id="event_name" name="eve" required>
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="title" name="title" required>
         </div>
         <div class="mb-3">
-          <label for="start_date" class="form-label">Start Date</label>
-          <input type="date" class="form-control" id="start_date" name="start_date" required>
-        </div>
-        <div class="mb-3">
-          <label for="end_date" class="form-label">End Date</label>
-          <input type="date" class="form-control" id="end_date" name="end_date" required>
-        </div>
-        <div class="mb-3">
-          <label for="organizer" class="form-label">Organizer</label>
-          <input type="text" class="form-control" id="organizer" name="organizer" required>
-        </div>
-        <div class="mb-3">
-          <label for="chief_guest" class="form-label">Chief Guest</label>
-          <input type="text" class="form-control" id="chief_guest" name="chief_guest" required>
-        </div>
-        <div class="mb-3">
-          <label for="circular_image" class="form-label">Circular Image</label>
-          <input type="file" class="form-control" id="circular_image" name="circular_image" accept="image/*" required>
-        </div>
-        <div class="mb-3">
-          <label for="proof1" class="form-label">Proof Image 1</label>
-          <input type="file" class="form-control" id="proof1" name="proof1" accept="image/*" required>
-        </div>
-        <div class="mb-3">
-          <label for="proof2" class="form-label">Proof Image 2</label>
-          <input type="file" class="form-control" id="proof2" name="proof2" accept="image/*" required>
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" id="description" name="description" required></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
 
-    <!-- View Submitted Events Section -->
-    <div id="form2" class="form-container" style="display: none;">
-      <h2>Submitted Events</h2>
-      <div id="events-list">
-        {% for event in events %}
-        <div class="event-card">
-          <h4>{{ event.event_name }}</h4>
-          <p><strong>Start Date:</strong> {{ event.start_date }}</p>
-          <p><strong>End Date:</strong> {{ event.end_date }}</p>
-          <p><strong>Organizer:</strong> {{ event.organizer }}</p>
-          <p><strong>Chief Guest:</strong> {{ event.chief_guest }}</p>
-          <p><strong>Circular:</strong></p>
-          <img src="data:image/png;base64,{{ event.circular }}" alt="Circular Image">
-          
-    <img src="data:image/png;base64,{{ event.proof1 }}" alt="Proof Image 1">
-    <p><strong>Proof Image 2:</strong></p>
-    <img src="data:image/png;base64,{{ event.proof2 }}" alt="Proof Image 2">
+    <div id="view-criteria1" class="form-container" style="display: none;">
+      <h4>View Criteria 1</h4>
+      <div id="criteria1Data"></div>
+    </div>
   </div>
-  {% endfor %}
-</div>
-</div>
-</div>
 
-<!-- JavaScript -->
-<script>
-function showForm(formNumber) {
-document.getElementById("form1").style.display = "none";
-document.getElementById("form2").style.display = "none";
-document.getElementById("form" + formNumber).style.display = "block";
-}
+  <script>
+    function toggleSubMenu(id) {
+      const sub = document.getElementById(id);
+      sub.style.display = sub.style.display === 'block' ? 'none' : 'block';
+    }
 
-function logout() {
-alert("Logged out!");
-}
+    function showContent(id) {
+      document.querySelectorAll('.form-container').forEach(div => div.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
 
-// Automatically show form1 on page load
-showForm(1);
-</script>
+      if (id === 'view-criteria1') fetchCriteria1();
+    }
+
+    document.getElementById('criteria1Form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      await fetch('/api/criteria1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      alert('Submitted!');
+      this.reset();
+    });
+
+    async function fetchCriteria1() {
+      const res = await fetch('/api/criteria1');
+      const data = await res.json();
+      const container = document.getElementById('criteria1Data');
+      container.innerHTML = data.map(d => `
+        <div class="border p-2 mb-2">
+          <strong>${d.title}</strong>
+          <p>${d.description}</p>
+        </div>
+      `).join('');
+    }
+
+    function logout() {
+      alert('Logged out!');
+    }
+  </script>
 </body>
 </html>
-
