@@ -65,7 +65,7 @@ def submit():
     except Exception as e:
         return f"Database error: {e}"
 
-    return f"Event '{event_name}' has been submitted and saved successfully!"
+    return  render_template("view.html", events=events)
 @app.route("/view", methods=["GET"])
 def view_data():
     try:
