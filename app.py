@@ -66,6 +66,19 @@ def submit():
         return f"Database error: {e}"
 
     return f"Event '{event_name}' has been submitted and saved successfully!"
+@app.route("/view", methods=["GET"])
+def view_data():
+    try:
+        conn = connect_db()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM events")
+        events = cur.fetchall()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        return f"Database error while fetching: {e}"
+
+    return render_template("view.html", events=events)
 
 if __name__ == "__main__":
     app.run(debug=True)
