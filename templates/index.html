@@ -59,17 +59,14 @@
       background-color: #fff;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
     }
-    .event-image {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
+    .event-card img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 10px;
       border-radius: 5px;
-      margin-right: 15px;
-    }
-    .event-details {
-      flex: 1;
     }
   </style>
 </head>
@@ -128,31 +125,39 @@
     <div id="form2" class="form-container" style="display: none;">
       <h2>Submitted Events</h2>
       <div id="events-list">
-        <!-- Events will be dynamically populated here -->
-      </div>
-    </div>
+        {% for event in events %}
+        <div class="event-card">
+          <h4>{{ event.event_name }}</h4>
+          <p><strong>Start Date:</strong> {{ event.start_date }}</p>
+          <p><strong>End Date:</strong> {{ event.end_date }}</p>
+          <p><strong>Organizer:</strong> {{ event.organizer }}</p>
+          <p><strong>Chief Guest:</strong> {{ event.chief_guest }}</p>
+          <p><strong>Circular:</strong></p>
+          <img src="data:image/png;base64,{{ event.circular }}" alt="Circular Image">
+          
+    <img src="data:image/png;base64,{{ event.proof1 }}" alt="Proof Image 1">
+    <p><strong>Proof Image 2:</strong></p>
+    <img src="data:image/png;base64,{{ event.proof2 }}" alt="Proof Image 2">
   </div>
+  {% endfor %}
+</div>
+</div>
+</div>
 
-  <script>
-    function showForm(formNumber) {
-      // Hide all forms
-      document.getElementById("form1").style.display = "none";
-      document.getElementById("form2").style.display = "none";
+<!-- JavaScript -->
+<script>
+function showForm(formNumber) {
+document.getElementById("form1").style.display = "none";
+document.getElementById("form2").style.display = "none";
+document.getElementById("form" + formNumber).style.display = "block";
+}
 
-      // Show the selected form
-      if (formNumber === 1) {
-        document.getElementById("form1").style.display = "block";
-      } else if (formNumber === 2) {
-        document.getElementById("form2").style.display = "block";
-        loadEvents(); // Load events when the "View Submitted Events" button is clicked
-      }
-    }
+function logout() {
+alert("Logged out!");
+}
 
-    function logout() {
-      alert('Logging out...');
-      // Implement actual logout functionality if needed
-    }
-
+// Automatically show form1 on page load
+showForm(1);
 </script>
 </body>
 </html>
