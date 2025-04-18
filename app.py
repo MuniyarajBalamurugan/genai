@@ -65,20 +65,36 @@ def submit():
     except Exception as e:
         return f"Database error: {e}"
 
-    return  render_template("view.html", events=events)
-@app.route("/view", methods=["GET"])
-def view_data():
+    return render_template("index.html")
+@app.route("/events", methods=["GET"])
+def get_events():
     try:
         conn = connect_db()
         cur = conn.cursor()
         cur.execute("SELECT * FROM events")
         events = cur.fetchall()
+        
+        # Prepare events data to return as JSON
+        event_list = []
+        for event in events:
+            event_data = {
+                "event_name": event[0],
+                "start_date": event[1],
+                "end_date": event[2],
+                "organizer": event[3],
+                "chief_guest": event[4],
+                "circular_path": event[5],  # Assuming these are the file paths
+                "proof1_path": event[6],
+                "proof2_path": event[7]
+            }
+            event_list.append(event_data)
+        
         cur.close()
         conn.close()
-    except Exception as e:
-        return f"Database error while fetching: {e}"
+        return jsonify(event_list)
 
-    return render_template("view.html", events=events)
+    except Exception as e:
+        return f"Error fetching events: {e}", 500
 
 if __name__ == "__main__":
     app.run(debug=True)
