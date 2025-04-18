@@ -4,7 +4,14 @@ import psycopg2
 
 app = Flask(__name__)
 
-# Use DATABASE_URL from environment
+# Upload folders
+CIRCULAR_FOLDER = 'static/circulars'
+PROOF_FOLDER = 'static/proofs'
+
+os.makedirs(CIRCULAR_FOLDER, exist_ok=True)
+os.makedirs(PROOF_FOLDER, exist_ok=True)
+
+# Use DATABASE_URL from environment (Render provides this)
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def connect_db():
@@ -23,25 +30,35 @@ def submit():
     organizer = request.form["organizer"]
     chief_guest = request.form["chief_guest"]
 
-    # Get uploaded files
+    # Get and save files
     circular_image = request.files["circular_image"]
     proof1 = request.files["proof1"]
     proof2 = request.files["proof2"]
 
-    # Read file contents as binary
-    circular_data = circular_image.read()
-    proof1_data = proof1.read()
-    proof2_data = proof2.read()
+    circular_path = os.path.join(CIRCULAR_FOLDER, circular_image.filename)
+    proof1_path = os.path.join(PROOF_FOLDER, proof1.filename)
+    proof2_path = os.path.join(PROOF_FOLDER, proof2.filename)
+
+    circular_image.save(circular_path)
+    proof1.save(proof1_path)
+    proof2.save(proof2_path)
 
     # Insert into database
     try:
         conn = connect_db()
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO events 
-            (event_name, start_date, end_date, organizer, chief_guest, circular, proof1, proof2)
+            INSERT INTO events (
+                event_name, start_date, end_date, 
+                organizer, chief_guest, 
+                circular_path, proof1_path, proof2_path
+            )
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        """, (event_name, start_date, end_date, organizer, chief_guest, circular_data, proof1_data, proof2_data))
+        """, (
+            event_name, start_date, end_date, 
+            organizer, chief_guest, 
+            circular_path, proof1_path, proof2_path
+        ))
         conn.commit()
         cur.close()
         conn.close()
