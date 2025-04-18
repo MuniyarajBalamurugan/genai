@@ -13,7 +13,7 @@ def connect_db():
 def home():
     return render_template("index.html")
 
-@app.route("/submit", methods=["POST"])
+@app.route("/criteria_1", methods=["POST"])
 def submit():
     try:
         # Get form data

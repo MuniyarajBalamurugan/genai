@@ -40,7 +40,7 @@
   <div class="content-area">
     <div id="form-area" class="form-container" style="display:none;">
       <h4>Add Event</h4>
-      <form action="/submit" method="POST" enctype="multipart/form-data">
+      <form action="/criteria_1" method="POST" enctype="multipart/form-data">
         <input type="text" name="eve" class="form-control mb-2" placeholder="Event Name" required>
         <input type="date" name="start_date" class="form-control mb-2" required placeholder="Start date">
         <input type="date" name="end_date" class="form-control mb-2" required placeholder="End date">
@@ -76,6 +76,7 @@
         .then(data => {
           const list = document.getElementById("events-list");
           list.innerHTML = "";
+          console.log(data)
           data.forEach(event => {
             const div = document.createElement("div");
             div.className = "event-card";
