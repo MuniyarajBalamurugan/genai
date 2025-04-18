@@ -12,7 +12,30 @@ def connect_db():
 
 @app.route("/", methods=["GET"])
 def home():
-    return render_template("index.html")
+    try:
+        conn = connect_db()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM events")
+        rows = cur.fetchall()
+
+        events = []
+        for row in rows:
+            events.append({
+                "event_name": row[0],
+                "start_date": row[1],
+                "end_date": row[2],
+                "organizer": row[3],
+                "chief_guest": row[4],
+                "circular": row[5].decode('utf-8'),
+                "proof1": row[6].decode('utf-8'),
+                "proof2": row[7].decode('utf-8'),
+            })
+
+        cur.close()
+        conn.close()
+        return render_template("index.html", events=events)
+    except Exception as e:
+        return f"Error loading events: {e}", 500
 
 @app.route("/submit", methods=["POST"])
 def submit():
