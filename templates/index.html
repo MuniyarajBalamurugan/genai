@@ -2,137 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NaacGPT Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      height: 100vh;
-    }
+    body { display: flex; height: 100vh; margin: 0; font-family: sans-serif; background: #f8f9fa; }
     .sidebar {
-      width: 250px;
-      background-color: #007bff;
-      color: white;
-      padding-top: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
+      width: 250px; background-color: #007bff; color: white; padding-top: 20px;
+      display: flex; flex-direction: column; align-items: center;
     }
     .sidebar button {
-      background: none;
-      border: none;
-      color: white;
-      padding: 15px;
-      text-align: left;
-      width: 100%;
-      cursor: pointer;
-      font-size: 16px;
+      width: 100%; padding: 15px; border: none; background: none; color: white; text-align: left;
     }
-    .sidebar button:hover {
-      background-color: #0056b3;
+    .sidebar button:hover { background-color: #0056b3; }
+    .submenu { display: none; padding-left: 15px; width: 100%; }
+    .submenu button { background: #339af0; }
+    .content-area { flex: 1; padding: 20px; overflow-y: auto; }
+    .form-container, .events-container {
+      background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 20px;
     }
-    .submenu {
-      padding-left: 20px;
-      display: none;
-      background-color: #3399ff;
-    }
-    .submenu button {
-      font-size: 14px;
-    }
-    .content {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      background-color: #f4f4f4;
-    }
-    .form-container {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      max-width: 600px;
-      margin: auto;
-    }
+    .event-card { padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; }
+    img { max-width: 100%; margin: 5px 0; }
   </style>
 </head>
 <body>
   <div class="sidebar">
-    <button onclick="toggleSubMenu('criteria1-sub')">Criteria 1</button>
-    <div id="criteria1-sub" class="submenu">
-      <button onclick="showContent('add-criteria1')">Add Criteria</button>
-      <button onclick="showContent('view-criteria1')">View Criteria</button>
+    <h4>NaacGPT</h4>
+    <button onclick="toggleSubmenu()">Criteria 1</button>
+    <div id="submenu" class="submenu">
+      <button onclick="showForm()">Add Criteria</button>
+      <button onclick="fetchEvents()">View Criteria</button>
     </div>
-    <button onclick="logout()">Logout</button>
+    <button onclick="alert('Dummy logout')">Logout</button>
   </div>
-  
-  <div class="content">
-    <div id="add-criteria1" class="form-container" style="display: none;">
-      <h4>Add Criteria 1</h4>
-      <form id="criteria1Form">
-        <div class="mb-3">
-          <label for="title" class="form-label">Title</label>
-          <input type="text" class="form-control" id="title" name="title" required>
-        </div>
-        <div class="mb-3">
-          <label for="description" class="form-label">Description</label>
-          <textarea class="form-control" id="description" name="description" required></textarea>
-        </div>
+
+  <div class="content-area">
+    <div id="form-area" class="form-container" style="display:none;">
+      <h4>Add Event</h4>
+      <form action="/submit" method="POST" enctype="multipart/form-data">
+        <input type="text" name="eve" class="form-control mb-2" placeholder="Event Name" required>
+        <input type="date" name="start_date" class="form-control mb-2" required>
+        <input type="date" name="end_date" class="form-control mb-2" required>
+        <input type="text" name="organizer" class="form-control mb-2" placeholder="Organizer" required>
+        <input type="text" name="chief_guest" class="form-control mb-2" placeholder="Chief Guest" required>
+        <input type="file" name="circular_image" class="form-control mb-2" required>
+        <input type="file" name="proof1" class="form-control mb-2" required>
+        <input type="file" name="proof2" class="form-control mb-2" required>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
 
-    <div id="view-criteria1" class="form-container" style="display: none;">
-      <h4>View Criteria 1</h4>
-      <div id="criteria1Data"></div>
+    <div id="events-area" class="events-container" style="display:none;">
+      <h4>View Events</h4>
+      <div id="events-list"></div>
     </div>
   </div>
 
   <script>
-    function toggleSubMenu(id) {
-      const sub = document.getElementById(id);
-      sub.style.display = sub.style.display === 'block' ? 'none' : 'block';
+    function toggleSubmenu() {
+      const submenu = document.getElementById("submenu");
+      submenu.style.display = submenu.style.display === "block" ? "none" : "block";
     }
 
-    function showContent(id) {
-      document.querySelectorAll('.form-container').forEach(div => div.style.display = 'none');
-      document.getElementById(id).style.display = 'block';
-
-      if (id === 'view-criteria1') fetchCriteria1();
+    function showForm() {
+      document.getElementById("form-area").style.display = "block";
+      document.getElementById("events-area").style.display = "none";
     }
 
-    document.getElementById('criteria1Form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const data = Object.fromEntries(formData.entries());
-
-      await fetch('/api/criteria1', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
-      alert('Submitted!');
-      this.reset();
-    });
-
-    async function fetchCriteria1() {
-      const res = await fetch('/api/criteria1');
-      const data = await res.json();
-      const container = document.getElementById('criteria1Data');
-      container.innerHTML = data.map(d => `
-        <div class="border p-2 mb-2">
-          <strong>${d.title}</strong>
-          <p>${d.description}</p>
-        </div>
-      `).join('');
-    }
-
-    function logout() {
-      alert('Logged out!');
+    function fetchEvents() {
+      fetch("/events")
+        .then(res => res.json())
+        .then(data => {
+          const list = document.getElementById("events-list");
+          list.innerHTML = "";
+          data.forEach(event => {
+            const div = document.createElement("div");
+            div.className = "event-card";
+            div.innerHTML = `
+              <strong>${event.event_name}</strong><br/>
+              <b>Dates:</b> ${event.start_date} to ${event.end_date}<br/>
+              <b>Organizer:</b> ${event.organizer} <br/>
+              <b>Chief Guest:</b> ${event.chief_guest}<br/>
+              <b>Circular:</b><br/><img src="data:image/png;base64,${event.circular}"/><br/>
+              <b>Proof1:</b><br/><img src="data:image/png;base64,${event.proof1}"/><br/>
+              <b>Proof2:</b><br/><img src="data:image/png;base64,${event.proof2}"/>
+            `;
+            list.appendChild(div);
+          });
+          document.getElementById("form-area").style.display = "none";
+          document.getElementById("events-area").style.display = "block";
+        });
     }
   </script>
 </body>
